@@ -135,7 +135,16 @@ end
     across system hardware.
 ]]
 function love.update(dt)
-    if gameState == 'serve' then
+    if gameState == 'start' then
+        -- input on start sets paddle to a player
+        if love.keyboard.isDown('w') or love.keyboard.isDown('s') then
+            player1.controller = 'Player'
+
+        elseif love.keyboard.isDown('up') or love.keyboard.isDown('down') then
+            player2.controller = 'Player'
+        end
+
+    elseif gameState == 'serve' then
         -- before switching to play, initialize ball's velocity based
         -- on player who last scored
         ball.dy = math.random(-50, 50)
@@ -232,24 +241,40 @@ function love.update(dt)
     --
     -- paddles can move no matter what state we're in
     --
+
     -- player 1
-    if love.keyboard.isDown('w') then
-        player1.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('s') then
-        player1.dy = PADDLE_SPEED
-    else
-        player1.dy = 0
+    if player1.controller == 'Player' then
+        if love.keyboard.isDown('w') then
+            player1.dy = -PADDLE_SPEED
+        elseif love.keyboard.isDown('s') then
+            player1.dy = PADDLE_SPEED
+        else
+            player1.dy = 0
+        end
+    elseif gameState ~= 'start' then
+        if ball.y > player1.y then
+            player1.dy = PADDLE_SPEED
+        elseif ball.y < player1.y then
+            player1.dy = -PADDLE_SPEED
+        end
     end
 
     -- player 2
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.dy = PADDLE_SPEED
-    else
-        player2.dy = 0
+    if player2.controller == 'Player' then
+        if love.keyboard.isDown('up') then
+            player2.dy = -PADDLE_SPEED
+        elseif love.keyboard.isDown('down') then
+            player2.dy = PADDLE_SPEED
+        else
+            player2.dy = 0
+        end
+    elseif gameState ~= 'start' then
+        if ball.y <= player2.y then
+            player2.dy = -PADDLE_SPEED
+        elseif ball.y > player2.y then
+            player2.dy = PADDLE_SPEED
+        end
     end
-
     -- update our ball based on its DX and DY only if we're in play state;
     -- scale the velocity by dt so movement is framerate-independent
     if gameState == 'play' then
@@ -315,6 +340,16 @@ function love.draw()
         love.graphics.setFont(smallFont)
         love.graphics.printf('Welcome to Pong!', 0, 10, VIRTUAL_WIDTH, 'center')
         love.graphics.printf('Press Enter to begin!', 0, 20, VIRTUAL_WIDTH, 'center')
+
+        -- announce players who have joined
+        if player1.controller == 'Player' then
+            love.graphics.setFont(smallFont)
+            love.graphics.printf('Player 1 has joined!', 0, 20, VIRTUAL_WIDTH, 'left')
+        end
+        if player2.controller == 'Player' then
+            love.graphics.setFont(smallFont)
+            love.graphics.printf('Player 2 has joined!', 0, 20, VIRTUAL_WIDTH, 'right')
+        end
     elseif gameState == 'serve' then
         -- UI messages
         love.graphics.setFont(smallFont)
