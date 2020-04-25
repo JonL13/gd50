@@ -17,10 +17,13 @@ PIPE_HEIGHT = 288
 BIRD_WIDTH = 38
 BIRD_HEIGHT = 24
 
+local pauseIcon = love.graphics.newImage('pause.png')
+
 function PlayState:init()
     self.bird = Bird()
     self.pipePairs = {}
     self.timer = 0
+    self.timerMax = 2
     self.score = 0
 
     -- initialize our last recorded Y value for a gap placement to base other gaps off of
@@ -28,16 +31,38 @@ function PlayState:init()
 end
 
 function PlayState:update(dt)
+
+    -- pause or unpause the game
+    if paused then
+        if love.keyboard.wasPressed('p') then
+            paused = false
+            sounds['music']:play()
+            sounds['pause']:play()
+            scrolling = true
+        end
+
+        return true
+    else
+        if love.keyboard.wasPressed('p') then
+            paused = true
+            sounds['music']:pause()
+            sounds['pause']:play()
+            scrolling = false
+            return true
+        end
+    end
+
     -- update timer for pipe spawning
     self.timer = self.timer + dt
 
     -- spawn a new pipe pair every second and a half
-    if self.timer > 2 then
+    if self.timer > self.timerMax then
         -- modify the last Y coordinate we placed so pipe gaps aren't too far apart
         -- no higher than 10 pixels below the top edge of the screen,
         -- and no lower than a gap length (90 pixels) from the bottom
-        local y = math.max(-PIPE_HEIGHT + 10, 
-            math.min(self.lastY + math.random(-20, 20), VIRTUAL_HEIGHT - 90 - PIPE_HEIGHT))
+        local y = math.max(-PIPE_HEIGHT + 10,
+                              math.min(self.lastY + math.random(-20, 20),
+                              VIRTUAL_HEIGHT - 90 - PIPE_HEIGHT))
         self.lastY = y
 
         -- add a new pipe pair at the end of the screen at our new Y
@@ -45,6 +70,9 @@ function PlayState:update(dt)
 
         -- reset timer
         self.timer = 0
+
+        --randomize the new timerMax between acceptable values
+        self.timerMax = math.random(2,4)
     end
 
     -- for every pair of pipes..
@@ -108,6 +136,10 @@ function PlayState:render()
 
     love.graphics.setFont(flappyFont)
     love.graphics.print('Score: ' .. tostring(self.score), 8, 8)
+
+    if paused then
+        love.graphics.draw(pauseIcon, 10, 50, 0, .25, .25)
+    end
 
     self.bird:render()
 end
