@@ -47,6 +47,12 @@ function LevelMaker.createMap(level)
     -- highest color of the highest tier, no higher than 5
     local highestColor = math.min(5, level % 5 + 3)
 
+    local createLockedBlock = false
+    if math.random(2) == 1 then
+        createLockedBlock = true
+    end
+
+
     -- lay out bricks such that they touch each other and fill the space
     for y = 1, numRows do
         -- whether we want to enable skipping for this row
@@ -95,8 +101,13 @@ function LevelMaker.createMap(level)
                 y * 16                  -- just use y * 16, since we need top padding anyway
             )
 
+            if createLockedBlock == true then
+                if math.random(2) == 1 then
+                    b.isLocked = 1
+                    createLockedBlock = false
+                end
             -- if we're alternating, figure out which color/tier we're on
-            if alternatePattern and alternateFlag then
+            elseif alternatePattern and alternateFlag then
                 b.color = alternateColor1
                 b.tier = alternateTier1
                 alternateFlag = not alternateFlag

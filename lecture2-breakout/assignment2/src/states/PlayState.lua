@@ -49,7 +49,7 @@ function PlayState:update(dt)
         else
             return
         end
-    elseif love.keyboard.wasPressed('space') then
+    elseif love.keyboard.wasPressed('space') or love.keyboard.wasPressed(' ') then
         self.paused = true
         gSounds['pause']:play()
         return
@@ -100,6 +100,13 @@ function PlayState:update(dt)
                         ball.y = powerup.y
                         table.insert(self.balls, ball)
                     end
+                elseif powerup.type == 10 then
+                    for k, brick in pairs(self.bricks) do
+                        if brick.isLocked == 1 then
+                            brick.isLocked = 0
+                            break
+                        end
+                    end
                 end
             end
 
@@ -116,7 +123,12 @@ function PlayState:update(dt)
             if brick.inPlay and ball:collides(brick) then
 
                 -- add to score
-                self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                if brick.isLocked == 0 then
+                    --this is a block that has been unlocked
+                    self.score = self.score + 2500
+                else
+                    self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                end
 
                 -- trigger the brick's hit function, which removes it from play
                 brick:hit()
@@ -158,7 +170,20 @@ function PlayState:update(dt)
                 -- generate powerup
                 local powerupChance = math.random(0, 100)
                 if powerupChance >= 50 then
-                    powerup = Powerup(brick.x + brick.width/2 - 8, brick.y + brick.height, 9)
+                    local powerupType = 9
+                    -- if a locked block is left, we'll generate the key powerup
+                    for k, brick in pairs(self.bricks) do
+                        if brick.isLocked == 1 then
+                            powerupType = 10
+                            break
+                        end
+                    end
+
+                    if math.random(2) == 2 then
+                        powerupType = 9
+                    end
+
+                    powerup = Powerup(brick.x + brick.width/2 - 8, brick.y + brick.height, powerupType)
                     table.insert(self.powerups, powerup)
                 end
 

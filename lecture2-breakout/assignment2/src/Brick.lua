@@ -59,6 +59,7 @@ function Brick:init(x, y)
     self.y = y
     self.width = 32
     self.height = 16
+    self.isLocked = -1
     
     -- used to determine whether this brick should be rendered
     self.inPlay = true
@@ -106,7 +107,8 @@ function Brick:hit()
 
     -- if we're at a higher tier than the base, we need to go down a tier
     -- if we're already at the lowest color, else just go down a color
-    if self.tier > 0 then
+    if self.isLocked == 1 then
+    elseif self.tier > 0 and self.isLocked ~= 0 then
         if self.color == 1 then
             self.tier = self.tier - 1
             self.color = 5
@@ -135,10 +137,16 @@ end
 
 function Brick:render()
     if self.inPlay then
+        local brickIndex
+        if self.isLocked ~= -1 then
+            brickIndex = 22
+        else
+            brickIndex = 1 + ((self.color - 1) * 4) + self.tier
+        end
         love.graphics.draw(gTextures['main'], 
             -- multiply color by 4 (-1) to get our color offset, then add tier to that
             -- to draw the correct tier and color brick onto the screen
-            gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
+            gFrames['bricks'][brickIndex],
             self.x, self.y)
     end
 end
