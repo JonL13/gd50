@@ -20,3 +20,6 @@ VIRTUAL_HEIGHT = 243
 
 -- paddle movement speed
 PADDLE_SPEED = 200
+
+-- how many points are required to upgrade the size of the paddle
+LENGTHEN_POINTS = 2000

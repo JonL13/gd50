@@ -31,6 +31,8 @@ function PlayState:enter(params)
     self.powerups = params.powerups
 
     self.recoverPoints = 5000
+    self.lengthenPoints = self.score + 2000
+
 
     -- give ball random starting velocity
     for k, ball in pairs(self.balls) do
@@ -99,7 +101,6 @@ function PlayState:update(dt)
                         table.insert(self.balls, ball)
                     end
                 end
-                print('powerup collision')
             end
 
             powerup.inPlay = false
@@ -126,11 +127,17 @@ function PlayState:update(dt)
                     self.health = math.min(3, self.health + 1)
 
                     -- multiply recover points by 2
-                    self.recoverPoints = math.min(100000, self.recoverPoints * 2)
-                    print('recoverPoints' .. self.recoverPoints)
+                    self.recoverPoints = math.min(self.recoverPoints + 100000, self.recoverPoints + (self.recoverPoints * 2))
 
                     -- play recover sound effect
                     gSounds['recover']:play()
+                end
+
+                if self.score > self.lengthenPoints then
+                    self.lengthenPoints = self.lengthenPoints + LENGTHEN_POINTS
+                    if self.paddle.size < 4 then
+                        self.paddle.size = self.paddle.size + 1
+                    end
                 end
 
                 -- go to our victory screen if there are no more bricks left
@@ -212,6 +219,11 @@ function PlayState:update(dt)
             self.balls[k] = nil
             if tableLength(self.balls) <= 0 then
                 self.health = self.health - 1
+
+                if self.paddle.size > 1 then
+                    self.paddle.size = self.paddle.size - 1
+                end
+
                 gSounds['hurt']:play()
 
                 if self.health == 0 then
