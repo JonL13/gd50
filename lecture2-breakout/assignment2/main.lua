@@ -66,6 +66,7 @@ function love.load()
         ['paddles'] = GenerateQuadsPaddles(gTextures['main']),
         ['balls'] = GenerateQuadsBalls(gTextures['main']),
         ['bricks'] = GenerateQuadsBricks(gTextures['main']),
+        ['powerups'] = GenerateQuadsPowerups(gTextures['main']),
         ['hearts'] = GenerateQuads(gTextures['hearts'], 10, 9)
     }
     
@@ -180,6 +181,13 @@ function love.keyboard.wasPressed(key)
     else
         return false
     end
+end
+
+function tableLength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    print('tableLength count: ' .. count)
+    return count
 end
 
 --[[

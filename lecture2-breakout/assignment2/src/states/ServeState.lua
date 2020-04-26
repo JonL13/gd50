@@ -25,6 +25,7 @@ function ServeState:enter(params)
     self.highScores = params.highScores
     self.level = params.level
     self.recoverPoints = params.recoverPoints
+    self.powerups = params.powerups
 
     -- init new ball (random color for fun)
     self.ball = Ball()
@@ -39,14 +40,19 @@ function ServeState:update(dt)
 
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
         -- pass in all important state info to the PlayState
+
+        self.balls = {}
+        table.insert(self.balls, self.ball)
+
         gStateMachine:change('play', {
             paddle = self.paddle,
             bricks = self.bricks,
             health = self.health,
             score = self.score,
             highScores = self.highScores,
-            ball = self.ball,
+            balls = self.balls,
             level = self.level,
+            powerups = self.powerups,
             recoverPoints = self.recoverPoints
         })
     end
