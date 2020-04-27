@@ -85,7 +85,7 @@ function StartState:update(dt)
                 
                 -- tween, using Timer, the transition rect's alpha to 255, then
                 -- transition to the BeginGame state after the animation is over
-                Timer.tween(1, {
+                Timer.tween(.5, {
                     [self] = {transitionAlpha = 255}
                 }):finish(function()
                     gStateMachine:change('begin-game', {
