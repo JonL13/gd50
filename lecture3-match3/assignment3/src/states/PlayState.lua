@@ -196,6 +196,9 @@ function PlayState:calculateMatches()
         -- add score for each match
         for k, match in pairs(matches) do
             self.score = self.score + #match * 50
+            for k, tile in pairs(match) do
+                self.timer = self.timer + 1
+            end
         end
 
         -- remove any tiles that matched from the board, making empty spaces
@@ -227,7 +230,8 @@ function PlayState:render()
     if self.highlightedTile then
         
         -- multiply so drawing white rect makes it brighter
-        love.graphics.setBlendMode('add')
+        --love.graphics.setBlendMode('add')
+        love.graphics.setBlendMode('additive') -- this is required for love 0.9.1; it was changed to add in 10 and higher; Linux doesn't have 10
 
         love.graphics.setColor(255, 255, 255, 96)
         love.graphics.rectangle('fill', (self.highlightedTile.gridX - 1) * 32 + (VIRTUAL_WIDTH - 272),
