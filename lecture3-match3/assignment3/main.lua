@@ -44,6 +44,9 @@ VIRTUAL_HEIGHT = 288
 -- speed at which our background texture will scroll
 BACKGROUND_SCROLL_SPEED = 80
 
+-- default percent chance of a shiny tile spawning
+SHINY_SPAWN_PERCENT = 25
+
 function love.load()
     
     -- window bar title

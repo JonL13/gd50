@@ -13,7 +13,7 @@
 
 Tile = Class{}
 
-function Tile:init(x, y, color, variety)
+function Tile:init(x, y, color, variety, shiny)
     
     -- board positions
     self.gridX = x
@@ -26,6 +26,10 @@ function Tile:init(x, y, color, variety)
     -- tile appearance/points
     self.color = color
     self.variety = variety
+
+    self.isShiny = shiny
+    self.shinyColor = 255
+    self.shinyModifier = 1
 end
 
 function Tile:render(x, y)
@@ -39,4 +43,21 @@ function Tile:render(x, y)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(gTextures['main'], gFrames['tiles'][self.color][self.variety],
         self.x + x, self.y + y)
+
+    -- draw shiny overlay
+    if self.isShiny then
+        love.graphics.setColor(self.shinyColor, self.shinyColor, self.shinyColor, 255)
+        love.graphics.draw(gTextures['main'], gFrames['tiles'][self.color][self.variety],
+                self.x + x, self.y + y)
+        love.graphics.setColor(255, 255, 255, 255)
+    end
+end
+
+function Tile:setShinyColor()
+    self.shinyColor = self.shinyColor + self.shinyModifier
+    if self.shinyColor >= 253 then
+        self.shinyModifier = -2
+    elseif self.shinyColor <= 150 then
+        self.shinyModifier = 2
+    end
 end

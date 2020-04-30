@@ -32,7 +32,7 @@ function Board:initializeTiles()
 
         for tileX = 1, 8 do
             -- create a new tile at X,Y with a random color and variety
-            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), self:getTileVariety()))
+            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), self:getTileVariety(), self:generateShinyChance()))
         end
     end
 
@@ -76,11 +76,20 @@ function Board:calculateMatches()
                 if matchNum >= 3 then
                     local match = {}
 
-                    -- go backwards from here by matchNum
-                    for x2 = x - 1, x - matchNum, -1 do
-                        
-                        -- add each tile to the match that's in that match
-                        table.insert(match, self.tiles[y][x2])
+                    -- if we have a shiny in the match, we're going to destroy the whole row
+                    if self:isShinyInHorizontalMatch(x, y, matchNum) then
+                        for x3 = 1, 8 do
+                            table.insert(match, self.tiles[y][x3])
+                        end
+                        table.insert(matches, match)
+                        break
+                    else
+                        -- go backwards from here by matchNum
+                        for x2 = x - 1, x - matchNum, -1 do
+
+                            -- add each tile to the match that's in that match
+                            table.insert(match, self.tiles[y][x2])
+                        end
                     end
 
                     -- add this match to our total matches table
@@ -99,10 +108,18 @@ function Board:calculateMatches()
         -- account for the last row ending with a match
         if matchNum >= 3 then
             local match = {}
-            
+
             -- go backwards from end of last row by matchNum
-            for x = 8, 8 - matchNum + 1, -1 do
-                table.insert(match, self.tiles[y][x])
+            if self:isShinyInHorizontalMatch(9, y, matchNum) then
+                for x3 = 1, 8 do
+                    table.insert(match, self.tiles[y][x3])
+                end
+                table.insert(matches, match)
+                break
+            else
+                for x = 8, 8 - matchNum + 1, -1 do
+                    table.insert(match, self.tiles[y][x])
+                end
             end
 
             table.insert(matches, match)
@@ -124,9 +141,16 @@ function Board:calculateMatches()
 
                 if matchNum >= 3 then
                     local match = {}
-
-                    for y2 = y - 1, y - matchNum, -1 do
-                        table.insert(match, self.tiles[y2][x])
+                    if self:isShinyInVerticalMatch(x,y,matchNum) then
+                        for y3 = 1, 8 do
+                            table.insert(match, self.tiles[y3][x])
+                        end
+                        table.insert(matches, match)
+                        break
+                    else
+                        for y2 = y - 1, y - matchNum, -1 do
+                            table.insert(match, self.tiles[y2][x])
+                        end
                     end
 
                     table.insert(matches, match)
@@ -146,8 +170,16 @@ function Board:calculateMatches()
             local match = {}
             
             -- go backwards from end of last row by matchNum
-            for y = 8, 8 - matchNum + 1, -1 do
-                table.insert(match, self.tiles[y][x])
+            if self:isShinyInVerticalMatch(x,9, matchNum) then
+                for y3 = 1, 8 do
+                    table.insert(match, self.tiles[y3][x])
+                end
+                table.insert(matches, match)
+                break
+            else
+                for y = 8, 8 - matchNum + 1, -1 do
+                    table.insert(match, self.tiles[y][x])
+                end
             end
 
             table.insert(matches, match)
@@ -240,7 +272,7 @@ function Board:getFallingTiles()
             if not tile then
 
                 -- new tile with random color and variety
-                local tile = Tile(x, y, math.random(18), self:getTileVariety())
+                local tile = Tile(x, y, math.random(18), self:getTileVariety(), self:generateShinyChance())
                 tile.y = -32
                 self.tiles[y][x] = tile
 
@@ -264,11 +296,35 @@ function Board:render()
 end
 
 function Board:getTileVariety()
-    print('level' .. self.level)
     local variety = math.random(6)
     if self.level == 1 then
         variety = 1
     end
-    print('variety' .. variety)
     return variety
+end
+
+function Board:generateShinyChance()
+    local shinyChance = math.random(100)
+    if shinyChance <= SHINY_SPAWN_PERCENT then
+        return true
+    end
+    return false
+end
+
+function Board:isShinyInHorizontalMatch(x, y, matchNum)
+    for x2 = x - 1, x - matchNum, -1 do
+        if self.tiles[y][x2].isShiny then
+            return true
+        end
+    end
+    return false
+end
+
+function Board:isShinyInVerticalMatch(x, y, matchNum)
+    for y2 = y - 1, y - matchNum, -1 do
+        if self.tiles[y2][x].isShiny then
+            return true
+        end
+    end
+    return false
 end

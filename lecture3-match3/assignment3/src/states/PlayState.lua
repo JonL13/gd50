@@ -174,6 +174,13 @@ function PlayState:update(dt)
         end
     end
 
+    for k, tileRow in pairs(self.board.tiles) do
+        for j, tile in pairs(tileRow) do
+            if tile.isShiny == true then
+                tile:setShinyColor()
+            end
+        end
+    end
     Timer.update(dt)
 end
 
@@ -195,7 +202,6 @@ function PlayState:calculateMatches()
 
         -- add score for each match
         for k, match in pairs(matches) do
-            self.score = self.score + #match * 50
             for k, tile in pairs(match) do
                 self.timer = self.timer + 1
                 self.score = self.score + (tile.variety * 20)
