@@ -77,33 +77,10 @@ function PlayState:update(dt)
 
     -- go back to start if time runs out
     if self.timer <= 0 then
-        
-        -- clear timers from prior PlayStates
-        Timer.clear()
-        
-        gSounds['game-over']:play()
-
-        gStateMachine:change('game-over', {
-            score = self.score
-        })
+        self:gameOver()
     end
 
-    -- go to next level if we surpass score goal
-    if self.score >= self.scoreGoal then
-        
-        -- clear timers from prior PlayStates
-        -- always clear before you change state, else next state's timers
-        -- will also clear!
-        Timer.clear()
-
-        gSounds['next-level']:play()
-
-        -- change to begin game state with new level (incremented)
-        gStateMachine:change('begin-game', {
-            level = self.level + 1,
-            score = self.score
-        })
-    end
+    self:checkVictory()
 
     if self.canInput then
         -- move cursor around based on bounds of grid, playing sounds
@@ -142,34 +119,7 @@ function PlayState:update(dt)
                 gSounds['error']:play()
                 self.highlightedTile = nil
             else
-                
-                -- swap grid positions of tiles
-                local tempX = self.highlightedTile.gridX
-                local tempY = self.highlightedTile.gridY
-
-                local newTile = self.board.tiles[y][x]
-
-                self.highlightedTile.gridX = newTile.gridX
-                self.highlightedTile.gridY = newTile.gridY
-                newTile.gridX = tempX
-                newTile.gridY = tempY
-
-                -- swap tiles in the tiles table
-                self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
-                    self.highlightedTile
-
-                self.board.tiles[newTile.gridY][newTile.gridX] = newTile
-
-                -- tween coordinates between the two so they swap
-                Timer.tween(0.1, {
-                    [self.highlightedTile] = {x = newTile.x, y = newTile.y},
-                    [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
-                })
-                
-                -- once the swap is finished, we can tween falling blocks as needed
-                :finish(function()
-                    self:calculateMatches()
-                end)
+                self:swapTiles(self.board.tiles[y][x], self.highlightedTile, 0.2)
             end
         end
     end
@@ -190,7 +140,7 @@ end
     have matched and replaces them with new randomized tiles, deferring most of this
     to the Board class.
 ]]
-function PlayState:calculateMatches()
+function PlayState:calculateMatches(tile1, tile2)
     self.highlightedTile = nil
 
     -- if we have any matches, remove them and tween the falling blocks that result
@@ -222,9 +172,14 @@ function PlayState:calculateMatches()
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches()
         end)
+
+        if self:possibleMovesRemaining(self.board) == false then
+            self:gameOver()
+        end
     
     -- if no matches, we can continue playing
-    else
+    elseif tile1 ~= nil and tile2 ~= nil then
+        self:unswapTiles(tile1, tile2, 0.1)
         self.canInput = true
     end
 end
@@ -270,4 +225,113 @@ function PlayState:render()
     love.graphics.printf('Score: ' .. tostring(self.score), 20, 52, 182, 'center')
     love.graphics.printf('Goal : ' .. tostring(self.scoreGoal), 20, 80, 182, 'center')
     love.graphics.printf('Timer: ' .. tostring(self.timer), 20, 108, 182, 'center')
+end
+
+function PlayState:swapTiles(tile1, tile2, tweenTime)
+    local tempGridX = tile2.gridX
+    local tempGridY = tile2.gridY
+    local newTile = tile1
+
+    tile2.gridX = tile1.gridX
+    tile2.gridY = tile1.gridY
+    newTile.gridX = tempGridX
+    newTile.gridY = tempGridY
+
+    self.board.tiles[tile2.gridY][tile2.gridX] = tile2
+    self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+    Timer.tween(tweenTime,{
+        [tile2] = {x = newTile.x, y = newTile.y},
+        [tile1] = {x = tile2.x, y = tile2.y}
+    }):finish(function()
+        self:calculateMatches(tile1, tile2)
+    end)
+end
+
+function PlayState:unswapTiles(tile1, tile2, tweenTime)
+    local tempGridX = tile2.gridX
+    local tempGridY = tile2.gridY
+    local newTile = tile1
+
+    tile2.gridX = tile1.gridX
+    tile2.gridY = tile1.gridY
+    newTile.gridX = tempGridX
+    newTile.gridY = tempGridY
+
+    self.board.tiles[tile2.gridY][tile2.gridX] = tile2
+    self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+    Timer.tween(tweenTime,{
+        [tile2] = {x = newTile.x, y = newTile.y},
+        [tile1] = {x = tile2.x, y = tile2.y}
+    })
+end
+
+function PlayState:fakeSwap(tile1, tile2)
+    local tempGridX = tile2.gridX
+    local tempGridY = tile2.gridY
+    local newTile = tile1
+
+    tile2.gridX = tile1.gridX
+    tile2.gridY = tile1.gridY
+    newTile.gridX = tempGridX
+    newTile.gridY = tempGridY
+
+    self.board.tiles[tile2.gridY][tile2.gridX] = tile2
+    self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+end
+
+function PlayState:checkVictory()
+    -- go to next level if we surpass score goal
+    if self.score >= self.scoreGoal then
+
+        -- clear timers from prior PlayStates
+        -- always clear before you change state, else next state's timers
+        -- will also clear!
+        Timer.clear()
+
+        gSounds['next-level']:play()
+
+        -- change to begin game state with new level (incremented)
+        gStateMachine:change('begin-game', {
+            level = self.level + 1,
+            score = self.score
+        })
+    end
+end
+
+function PlayState:gameOver()
+    gSounds['game-over']:play()
+
+    gStateMachine:change('game-over', {
+        score = self.score
+    })
+end
+
+function PlayState:possibleMovesRemaining(board)
+    local moveRemains
+    for y = 1, 8 do
+        for x = 1, 8 do
+            print('moves remain for y,x:' .. y .. ',' .. x)
+            if x ~= 8 then
+                self:fakeSwap(board.tiles[y][x+1], board.tiles[y][x])
+                moveRemains = board:calculateMatches()
+                self:fakeSwap(board.tiles[y][x], board.tiles[y][x+1])
+                if moveRemains then
+                    return true
+                end
+            end
+
+            if y ~= 8 then
+                self:fakeSwap(board.tiles[y+1][x], board.tiles[y][x])
+                moveRemains = board:calculateMatches()
+                self:fakeSwap(board.tiles[y][x], board.tiles[y+1][x])
+                if moveRemains then
+                    return true
+                end
+            end
+        end
+    end
+    print('no moves remain')
+    return false
 end

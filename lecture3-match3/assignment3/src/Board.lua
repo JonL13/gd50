@@ -25,14 +25,22 @@ end
 function Board:initializeTiles()
     self.tiles = {}
 
+    local tableColors = {}
+    while #tableColors <= 5 do
+        local color = math.random(18)
+        if tableHasValue(tableColors, color) == false and tableHasValue(tableColors, color + 2) == false and tableHasValue(tableColors, color - 2) == false then
+            table.insert(tableColors, color)
+        end
+    end
+
+
     for tileY = 1, 8 do
-        
         -- empty table that will serve as a new row
         table.insert(self.tiles, {})
 
         for tileX = 1, 8 do
             -- create a new tile at X,Y with a random color and variety
-            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), self:getTileVariety(), self:generateShinyChance()))
+            table.insert(self.tiles[tileY], Tile(tileX, tileY, tableColors[math.random(#tableColors)], self:getTileVariety(), self:generateShinyChance()))
         end
     end
 
