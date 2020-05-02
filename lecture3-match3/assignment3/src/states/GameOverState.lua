@@ -17,7 +17,8 @@ function GameOverState:init()
 end
 
 function GameOverState:enter(params)
-    self.score = params.score 
+    self.score = params.score
+    Timer.clear()
 end
 
 function GameOverState:update(dt)
