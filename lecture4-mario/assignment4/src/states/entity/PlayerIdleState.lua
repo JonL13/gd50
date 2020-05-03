@@ -24,7 +24,7 @@ function PlayerIdleState:update(dt)
         self.player:changeState('walking')
     end
 
-    if love.keyboard.wasPressed('space') then
+    if love.keyboard.wasPressed('space') or love.keyboard.wasPressed(' ') then
         self.player:changeState('jump')
     end
 
