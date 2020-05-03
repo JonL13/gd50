@@ -22,6 +22,10 @@ function LevelMaker.generate(width, height)
     local tileset = math.random(20)
     local topperset = math.random(20)
 
+    local keySpawned = false
+    local lockSpawned = false
+    local keyLockType = math.random(#KEYS)
+
     -- insert blank tables into tiles for later access
     for x = 1, height do
         table.insert(tiles, {})
@@ -93,8 +97,62 @@ function LevelMaker.generate(width, height)
                 )
             end
 
-            -- chance to spawn a block
-            if math.random(10) == 1 then
+            -- spawn key in first half of level
+            if ((x < width/2) and (keySpawned == false) and (math.random(width/2 - x) == 1))
+                or (x > width / 2 and keySpawned == false) then
+                table.insert(objects,
+                    -- key
+                    GameObject{
+                        texture = 'keys-locks',
+                        x = (x - 1) * TILE_SIZE,
+                        y = (blockHeight - 1) * TILE_SIZE,
+                        width = 16,
+                        height = 16,
+
+                        frame = KEYS[keyLockType],
+                        collidable = true,
+                        hit = false,
+                        solid = false,
+                        consumable = true,
+
+                        onConsume = function(player, object)
+                            gSounds['pickup']:play()
+                            player.hasKey = true
+                        end
+
+                    }
+                )
+                keySpawned = true
+
+            elseif ( (x > width/2) and (lockSpawned == false) and math.random((width/2 - 5) - (x - width/2)) == 1)
+                or (x > width - 5 and lockSpawned == false) then
+                table.insert(objects,
+                    GameObject{
+                        texture = 'keys-locks',
+                        x = (x - 1) * TILE_SIZE,
+                        y = (blockHeight - 1) * TILE_SIZE,
+                        width = 16,
+                        height = 16,
+
+                        frame = LOCKS[keyLockType],
+                        collidable = true,
+                        hit = false,
+                        solid = true,
+
+                        onCollide = function(obj, player)
+                            if player.hasKey and not obj.hit then
+                                gSounds['pickup']:play()
+                                player.hasKey = false
+                                obj.hit = true
+                            end
+
+                            gSounds['empty-block']:play()
+                        end
+                    }
+                )
+                lockSpawned = true
+                -- chance to spawn a block
+            elseif math.random(10) == 1 then
                 table.insert(objects,
 
                     -- jump block
@@ -138,7 +196,7 @@ function LevelMaker.generate(width, height)
                                             player.score = player.score + 100
                                         end
                                     }
-                                    
+
                                     -- make the gem move up from the block and play a sound
                                     Timer.tween(0.1, {
                                         [gem] = {y = (blockHeight - 2) * TILE_SIZE}
