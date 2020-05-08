@@ -99,3 +99,7 @@ KEYS = {
 LOCKS = {
     5, 6, 7, 8
 }
+
+GREYFLAGPOLE = {
+    1, 10, 19
+}

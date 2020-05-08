@@ -41,8 +41,10 @@ function LevelMaker.generate(width, height)
                 Tile(x, y, tileID, nil, tileset, topperset))
         end
 
+        --drawFlag(player, objects, 1)
+
         -- chance to just be emptiness
-        if math.random(7) == 1 and x ~= 1 then
+        if math.random(7) == 1 and x ~= 1 and x ~= width - 1 then
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, nil, tileset, topperset))
@@ -58,7 +60,7 @@ function LevelMaker.generate(width, height)
             end
 
             -- chance to generate a pillar
-            if math.random(8) == 1 then
+            if math.random(8) == 1 and x ~= width - 1 then
                 blockHeight = 2
                 
                 -- chance to generate bush on pillar
@@ -142,6 +144,7 @@ function LevelMaker.generate(width, height)
                         onCollide = function(obj, player)
                             if player.hasKey and not obj.hit then
                                 gSounds['pickup']:play()
+                                drawFlag(player, objects, width - 1)
                                 player.hasKey = false
                                 obj.hit = true
                             end
@@ -152,7 +155,7 @@ function LevelMaker.generate(width, height)
                 )
                 lockSpawned = true
                 -- chance to spawn a block
-            elseif math.random(10) == 1 then
+            elseif math.random(10) == 1 and x ~= width - 1 then
                 table.insert(objects,
 
                     -- jump block
@@ -221,4 +224,76 @@ function LevelMaker.generate(width, height)
     map.tiles = tiles
     
     return GameLevel(entities, objects, map)
+end
+
+function drawFlag(player, objects, x)
+    table.insert(objects,
+            GameObject{
+                texture = 'flags',
+                x = (x - 1) * TILE_SIZE,
+                y = (5) * TILE_SIZE,
+                width = 16,
+                height = 16,
+                frame = GREYFLAGPOLE[3],
+                collidable = true,
+                hit = false,
+                solid = false,
+                consumable = true,
+                onConsume = flagConsume
+            }
+    )
+    table.insert(objects,
+            GameObject{
+                texture = 'flags',
+                x = (x - 1) * TILE_SIZE,
+                y = (4) * TILE_SIZE,
+                width = 16,
+                height = 16,
+                frame = GREYFLAGPOLE[2],
+                collidable = true,
+                hit = false,
+                solid = false,
+                consumable = true,
+                onConsume = flagConsume
+            }
+    )
+    table.insert(objects,
+            GameObject{
+                texture = 'flags',
+                x = (x - 1) * TILE_SIZE,
+                y = (3) * TILE_SIZE,
+                width = 16,
+                height = 16,
+                frame = GREYFLAGPOLE[1],
+                collidable = true,
+                hit = false,
+                solid = false,
+                consumable = true,
+                onConsume = flagConsume
+            }
+    )
+    table.insert(objects,
+            GameObject{
+                texture = 'flags',
+                x = (x) * TILE_SIZE - 8,
+                y = (3) * TILE_SIZE,
+                width = 16,
+                height = 16,
+                frame = 7,
+                collidable = true,
+                hit = false,
+                solid = false,
+                consumable = true,
+                onConsume = flagConsume
+            }
+    )
+end
+
+function flagConsume(obj)
+    obj.levelNumber = obj.levelNumber + 1
+    gStateMachine:change('play', {
+        score = obj.score,
+        levelNumber = obj.levelNumber,
+        player = obj
+    })
 end
