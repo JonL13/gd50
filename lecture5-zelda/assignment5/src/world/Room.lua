@@ -23,6 +23,8 @@ function Room:init(player)
     self.objects = {}
     self:generateObjects()
 
+    self.powerups = {}
+
     -- doorways that lead to other dungeon rooms
     self.doorways = {}
     table.insert(self.doorways, Doorway('top', false, self))
@@ -183,6 +185,15 @@ function Room:update(dt)
             object:onCollide()
         end
     end
+
+    for k, powerup in pairs(self.powerups) do
+        powerup:update(dt)
+
+        -- trigger collision callback on object
+        if self.player:collides(powerup) and (powerup.isUsed == nil or powerup.isUsed == false) then
+            powerup:onCollide()
+        end
+    end
 end
 
 function Room:render()
@@ -202,7 +213,15 @@ function Room:render()
     end
 
     for k, object in pairs(self.objects) do
-        object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        if(object.isUsed == nil or object.isUsed == false) then
+            object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        end
+    end
+
+    for k, powerup in pairs(self.powerups) do
+        if(powerup.isUsed == nil or powerup.isUsed == false) then
+            powerup:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        end
     end
 
     for k, entity in pairs(self.entities) do

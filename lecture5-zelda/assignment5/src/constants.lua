@@ -20,6 +20,10 @@ TILE_SIZE = 16
 -- entity constants
 --
 PLAYER_WALK_SPEED = 60
+PLAYER_MAXIMUM_HEALTH = 6
+
+-- chance of generating a heart, out of ten
+HEART_GENERATION_CHANCE = 3
 
 --
 -- map constants

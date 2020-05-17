@@ -8,6 +8,9 @@
 
 PlayerSwingSwordState = Class{__includes = BaseState}
 
+-- forward declaration for local functions
+local generateHeart
+
 function PlayerSwingSwordState:init(player, dungeon)
     self.player = player
     self.dungeon = dungeon
@@ -58,9 +61,14 @@ end
 function PlayerSwingSwordState:update(dt)
     -- check if hitbox collides with any entities in the scene
     for k, entity in pairs(self.dungeon.currentRoom.entities) do
+
         if entity:collides(self.swordHitbox) then
             entity:damage(1)
+
             gSounds['hit-enemy']:play()
+            if(entity.health <= 0 and entity.dead == false) then
+                generateHeart(entity, self.player, self.dungeon)
+            end
         end
     end
 
@@ -85,4 +93,27 @@ function PlayerSwingSwordState:render()
     -- love.graphics.rectangle('line', self.swordHurtbox.x, self.swordHurtbox.y,
     --     self.swordHurtbox.width, self.swordHurtbox.height)
     -- love.graphics.setColor(255, 255, 255, 255)
+end
+
+function generateHeart(enemy, player, dungeon)
+    local generationChance = math.random(1, 10)
+    if(generationChance > HEART_GENERATION_CHANCE) then
+        do return end
+    end
+
+    local heartObject = GameObject(GAME_OBJECT_DEFS['heart'], enemy.x, enemy.y)
+    heartObject.isUsed = false;
+    heartObject.onCollide = function()
+        gSounds['pickup']:play()
+        if(heartObject.isUsed == false) then
+            heartObject.isUsed = true
+            if player.health <= ENTITY_DEFS['player'].maxHealth - 2 then
+                player.health = player.health + 2
+            elseif player.health == ENTITY_DEFS['player'].maxHealth - 1 then
+                player.health = player.health + 1
+            end
+        end
+    end
+
+    table.insert(dungeon.currentRoom.powerups, heartObject)
 end

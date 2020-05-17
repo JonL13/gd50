@@ -9,6 +9,7 @@
 ENTITY_DEFS = {
     ['player'] = {
         walkSpeed = PLAYER_WALK_SPEED,
+        maxHealth = PLAYER_MAXIMUM_HEALTH,
         animations = {
             ['walk-left'] = {
                 frames = {13, 14, 15, 16},

@@ -20,7 +20,7 @@ function PlayState:init()
         height = 22,
 
         -- one heart == 2 health
-        health = 6,
+        health = ENTITY_DEFS['player'].maxHealth,
 
         -- rendering and collision offset for spaced sprites
         offsetY = 5
