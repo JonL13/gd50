@@ -22,41 +22,58 @@ function EntityWalkState:init(entity, dungeon)
     self.bumped = false
 end
 
-function EntityWalkState:update(dt)
-    
+function EntityWalkState:update(dt, dungeon)
     -- assume we didn't hit a wall
     self.bumped = false
+    local predictiveObjectBump = { x = self.entity.x, y = self.entity.y, width = self.entity.width, height = self.entity.height }
 
     if self.entity.direction == 'left' then
-        self.entity.x = self.entity.x - self.entity.walkSpeed * dt
-        
         if self.entity.x <= MAP_RENDER_OFFSET_X + TILE_SIZE then 
             self.entity.x = MAP_RENDER_OFFSET_X + TILE_SIZE
             self.bumped = true
         end
-    elseif self.entity.direction == 'right' then
-        self.entity.x = self.entity.x + self.entity.walkSpeed * dt
+        predictiveObjectBump.x = self.entity.x - 2
 
+    elseif self.entity.direction == 'right' then
         if self.entity.x + self.entity.width >= VIRTUAL_WIDTH - TILE_SIZE * 2 then
             self.entity.x = VIRTUAL_WIDTH - TILE_SIZE * 2 - self.entity.width
             self.bumped = true
         end
+        predictiveObjectBump.x = self.entity.x + 2
     elseif self.entity.direction == 'up' then
-        self.entity.y = self.entity.y - self.entity.walkSpeed * dt
-
         if self.entity.y <= MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2 then 
             self.entity.y = MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2
             self.bumped = true
         end
+        predictiveObjectBump.y = self.entity.y - 2
     elseif self.entity.direction == 'down' then
-        self.entity.y = self.entity.y + self.entity.walkSpeed * dt
-
         local bottomEdge = VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) 
             + MAP_RENDER_OFFSET_Y - TILE_SIZE
 
         if self.entity.y + self.entity.height >= bottomEdge then
             self.entity.y = bottomEdge - self.entity.height
             self.bumped = true
+        end
+        predictiveObjectBump.y = self.entity.y + 2
+    end
+
+    if(self.dungeon ~= null and self.entity ~= null) then
+        for k, entity in pairs(self.dungeon.currentRoom.objects) do
+            if entity:collides(predictiveObjectBump) and entity.solid == true and entity.carried ~= true and entity.destroyed ~= true then
+                self.bumped = true
+            end
+        end
+    end
+
+    if(self.bumped == false) then
+        if self.entity.direction == 'left' then
+            self.entity.x = self.entity.x - self.entity.walkSpeed * dt
+        elseif self.entity.direction == 'right' then
+            self.entity.x = self.entity.x + self.entity.walkSpeed * dt
+        elseif self.entity.direction == 'up' then
+            self.entity.y = self.entity.y - self.entity.walkSpeed * dt
+        elseif self.entity.direction == 'down' then
+            self.entity.y = self.entity.y + self.entity.walkSpeed * dt
         end
     end
 end

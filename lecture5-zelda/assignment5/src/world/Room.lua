@@ -8,6 +8,10 @@
 
 Room = Class{}
 
+-- forward declaration for local functions
+local generateSwitch
+local generatePot
+
 function Room:init(player)
     self.width = MAP_WIDTH
     self.height = MAP_HEIGHT
@@ -42,6 +46,8 @@ function Room:init(player)
     -- used for drawing when this room is the next room, adjacent to the active
     self.adjacentOffsetX = 0
     self.adjacentOffsetY = 0
+
+    self.numberOfPots = 3
 end
 
 --[[
@@ -82,30 +88,14 @@ end
     Randomly creates an assortment of obstacles for the player to navigate around.
 ]]
 function Room:generateObjects()
-    table.insert(self.objects, GameObject(
-        GAME_OBJECT_DEFS['switch'],
-        math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
-                    VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
-        math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
-                    VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
-    ))
+    local switch = generateSwitch(self)
+    table.insert(self.objects, switch)
 
-    -- get a reference to the switch
-    local switch = self.objects[1]
-
-    -- define a function for the switch that will open all doors in the room
-    switch.onCollide = function()
-        if switch.state == 'unpressed' then
-            switch.state = 'pressed'
-            
-            -- open every door in the room if we press the switch
-            for k, doorway in pairs(self.doorways) do
-                doorway.open = true
-            end
-
-            gSounds['door']:play()
-        end
+    for x = 1, 3 do
+        local pot = generatePot(self)
+        table.insert(self.objects, pot)
     end
+
 end
 
 --[[
@@ -178,7 +168,9 @@ function Room:update(dt)
     end
 
     for k, object in pairs(self.objects) do
-        object:update(dt)
+        if object.destroyed ~= true then
+            object:update(dt)
+        end
 
         -- trigger collision callback on object
         if self.player:collides(object) then
@@ -213,7 +205,7 @@ function Room:render()
     end
 
     for k, object in pairs(self.objects) do
-        if(object.isUsed == nil or object.isUsed == false) then
+        if(object.isUsed == nil or object.isUsed == false) and (object.destroyed == nil or object.destroyed == false) then
             object:render(self.adjacentOffsetX, self.adjacentOffsetY)
         end
     end
@@ -226,6 +218,12 @@ function Room:render()
 
     for k, entity in pairs(self.entities) do
         if not entity.dead then entity:render(self.adjacentOffsetX, self.adjacentOffsetY) end
+    end
+
+    for k, object in pairs(self.objects) do
+        if object.carried == true then
+            object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        end
     end
 
     -- stencil out the door arches so it looks like the player is going through
@@ -254,4 +252,34 @@ function Room:render()
     end
 
     love.graphics.setStencilTest()
+end
+
+function generateSwitch(room)
+    local switch = GameObject(GAME_OBJECT_DEFS['switch'],
+            math.random(MAP_RENDER_OFFSET_X + TILE_SIZE, VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+            math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE, VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
+    )
+    switch.onCollide = function()
+        if switch.state == 'unpressed' then
+            switch.state = 'pressed'
+
+            -- open every door in the room if we press the switch
+            for k, doorway in pairs(room.doorways) do
+                doorway.open = true
+            end
+            gSounds['door']:play()
+        end
+    end
+
+    return switch
+end
+
+function generatePot(room)
+    local pot = GameObject(GAME_OBJECT_DEFS['pot'],
+            math.random(MAP_RENDER_OFFSET_X + TILE_SIZE, VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+            math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE, VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16))
+    pot.frame = POTS[math.random(#POTS)]
+    pot.room = room
+
+    return pot
 end

@@ -30,6 +30,8 @@ require 'src/states/entity/EntityWalkState'
 require 'src/states/entity/player/PlayerIdleState'
 require 'src/states/entity/player/PlayerSwingSwordState'
 require 'src/states/entity/player/PlayerWalkState'
+require 'src/states/entity/player/PlayerPickupState'
+require 'src/states/entity/player/PlayerCarryingState'
 
 require 'src/states/game/GameOverState'
 require 'src/states/game/PlayState'
@@ -40,6 +42,8 @@ gTextures = {
     ['background'] = love.graphics.newImage('graphics/background.png'),
     ['character-walk'] = love.graphics.newImage('graphics/character_walk.png'),
     ['character-swing-sword'] = love.graphics.newImage('graphics/character_swing_sword.png'),
+    ['character_pot_lift'] = love.graphics.newImage('graphics/character_pot_lift.png'),
+    ['character_pot_walk'] = love.graphics.newImage('graphics/character_pot_walk.png'),
     ['hearts'] = love.graphics.newImage('graphics/hearts.png'),
     ['switches'] = love.graphics.newImage('graphics/switches.png'),
     ['entities'] = love.graphics.newImage('graphics/entities.png')
@@ -49,6 +53,8 @@ gFrames = {
     ['tiles'] = GenerateQuads(gTextures['tiles'], 16, 16),
     ['character-walk'] = GenerateQuads(gTextures['character-walk'], 16, 32),
     ['character-swing-sword'] = GenerateQuads(gTextures['character-swing-sword'], 32, 32),
+    ['character_pot_lift'] = GenerateQuads(gTextures['character_pot_lift'], 16, 32),
+    ['character_pot_walk'] = GenerateQuads(gTextures['character_pot_walk'], 16, 32),
     ['entities'] = GenerateQuads(gTextures['entities'], 16, 16),
     ['hearts'] = GenerateQuads(gTextures['hearts'], 16, 16),
     ['switches'] = GenerateQuads(gTextures['switches'], 16, 18)
@@ -66,9 +72,10 @@ gFonts = {
 
 gSounds = {
     ['music'] = love.audio.newSource('sounds/music.mp3', "stream"),
-    ['sword'] = love.audio.newSource('sounds/sword.wav', "stream"),
-    ['hit-enemy'] = love.audio.newSource('sounds/hit_enemy.wav', "stream"),
-    ['hit-player'] = love.audio.newSource('sounds/hit_player.wav', "stream"),
-    ['door'] = love.audio.newSource('sounds/door.wav', "stream"),
-    ['pickup'] = love.audio.newSource('sounds/pickup.wav', "stream")
+    ['sword'] = love.audio.newSource('sounds/sword.wav', "static"),
+    ['hit-enemy'] = love.audio.newSource('sounds/hit_enemy.wav', "static"),
+    ['hit-player'] = love.audio.newSource('sounds/hit_player.wav', "static"),
+    ['door'] = love.audio.newSource('sounds/door.wav', "static"),
+    ['lift'] = love.audio.newSource('sounds/lift.wav', "static"),
+    ['pickup'] = love.audio.newSource('sounds/pickup.wav', "static")
 }
