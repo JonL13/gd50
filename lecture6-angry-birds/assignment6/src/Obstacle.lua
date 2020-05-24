@@ -43,7 +43,7 @@ function Obstacle:init(world, shape, x, y)
 
     self.fixture = love.physics.newFixture(self.body, self.shape)
 
-    self.fixture:setUserData('Obstacle')
+    self.fixture:setUserData({type = 'Obstacle'})
 end
 
 function Obstacle:update(dt)

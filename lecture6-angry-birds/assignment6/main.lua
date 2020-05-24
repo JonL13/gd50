@@ -44,7 +44,6 @@ function love.load()
     love.audio.setVolume(.1)
 
     gSounds['music']:setLooping(true)
-    --gSounds['music']:setVolume(.08)
     gSounds['music']:play()
 
     love.keyboard.keysPressed = {}

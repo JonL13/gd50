@@ -29,7 +29,7 @@ function AlienLaunchMarker:init(world)
     self.launched = false
 
     -- our alien we will eventually spawn
-    self.alien = nil
+    self.aliens = {}
 end
 
 function AlienLaunchMarker:update(dt)
@@ -49,14 +49,11 @@ function AlienLaunchMarker:update(dt)
             self.launched = true
 
             -- spawn new alien in the world, passing in user data of player
-            self.alien = Alien(self.world, 'round', self.shiftedX, self.shiftedY, 'Player')
-
-            -- apply the difference between current X,Y and base X,Y as launch vector impulse
-            self.alien.body:setLinearVelocity((self.baseX - self.shiftedX) * 10, (self.baseY - self.shiftedY) * 10)
-
-            -- make the alien pretty bouncy
-            self.alien.fixture:setRestitution(0.4)
-            self.alien.body:setAngularDamping(1)
+            local alien = Alien(self.world, 'round', self.shiftedX, self.shiftedY, {type = 'Player', hasCollided = false, isSplittable = true})
+            alien.body:setLinearVelocity((self.baseX - self.shiftedX) * 10, (self.baseY - self.shiftedY) * 10)
+            alien.body:setAngularDamping(1)
+            alien.fixture:setRestitution(0.4) -- make the alien pretty bouncy
+            table.insert(self.aliens, alien)
 
             -- we're no longer aiming
             self.aiming = false
@@ -67,12 +64,33 @@ function AlienLaunchMarker:update(dt)
             self.shiftedX = math.min(self.baseX + 30, math.max(x, self.baseX - 30))
             self.shiftedY = math.min(self.baseY + 30, math.max(y, self.baseY - 30))
         end
+    elseif self.launched and love.keyboard.wasPressed('space') then
+        for k, alien in pairs(self.aliens) do
+            if alien.fixture:getUserData().isSplittable == true and alien.fixture:getUserData().hasCollided == false then
+                local velX, velY = alien.body:getLinearVelocity()
+
+                local higherAlien = Alien(self.world, 'round', alien.body:getX(), alien.body:getY() - 50, {type = 'Player', hasCollided = false, isSplittable = false})
+                higherAlien.body:setLinearVelocity(velX, velY - 50)
+                higherAlien.body:setAngularDamping(1)
+                higherAlien.fixture:setRestitution(.4)
+                higherAlien.launched = true
+                table.insert(self.aliens, higherAlien)
+
+                local lowerAlien = Alien(self.world, 'round', alien.body:getX(), alien.body:getY() + 50, {type = 'Player', hasCollided = false, isSplittable = false})
+                lowerAlien.body:setLinearVelocity(velX, velY + 50)
+                lowerAlien.body:setAngularDamping(1)
+                lowerAlien.fixture:setRestitution(.4)
+                lowerAlien.launched = true
+                table.insert(self.aliens, lowerAlien)
+
+                alien.fixture:getUserData().isSplittable = false
+            end
+        end
     end
 end
 
 function AlienLaunchMarker:render()
     if not self.launched then
-        
         -- render base alien, non physics based
         love.graphics.draw(gTextures['aliens'], gFrames['aliens'][9], 
             self.shiftedX - 17.5, self.shiftedY - 17.5)
@@ -106,6 +124,8 @@ function AlienLaunchMarker:render()
         
         love.graphics.setColor(255, 255, 255, 255)
     else
-        self.alien:render()
+        for k, alien in pairs(self.aliens) do
+            alien:render()
+        end
     end
 end

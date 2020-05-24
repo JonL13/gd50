@@ -21,16 +21,17 @@ function Level:init()
     -- one for different stages of any given collision
     function beginContact(a, b, coll)
         local types = {}
-        types[a:getUserData()] = true
-        types[b:getUserData()] = true
+        types[a:getUserData().type] = true
+        types[b:getUserData().type] = true
 
         -- if we collided between both an alien and an obstacle...
         if types['Obstacle'] and types['Player'] then
-
             -- destroy the obstacle if player's combined velocity is high enough
-            if a:getUserData() == 'Obstacle' then
+            if a:getUserData().type == 'Obstacle' then
                 local velX, velY = b:getBody():getLinearVelocity()
                 local sumVel = math.abs(velX) + math.abs(velY)
+
+                b:getUserData().hasCollided = true
 
                 if sumVel > 20 then
                     table.insert(self.destroyedBodies, a:getBody())
@@ -38,6 +39,7 @@ function Level:init()
             else
                 local velX, velY = a:getBody():getLinearVelocity()
                 local sumVel = math.abs(velX) + math.abs(velY)
+                a:getUserData().hasCollided = true
 
                 if sumVel > 20 then
                     table.insert(self.destroyedBodies, b:getBody())
@@ -49,7 +51,7 @@ function Level:init()
         if types['Obstacle'] and types['Alien'] then
 
             -- destroy the alien if falling debris is falling fast enough
-            if a:getUserData() == 'Obstacle' then
+            if a:getUserData().type == 'Obstacle' then
                 local velX, velY = a:getBody():getLinearVelocity()
                 local sumVel = math.abs(velX) + math.abs(velY)
 
@@ -70,13 +72,15 @@ function Level:init()
         if types['Player'] and types['Alien'] then
 
             -- destroy the alien if player is traveling fast enough
-            if a:getUserData() == 'Player' then
+            if a:getUserData().type == 'Player' then
                 local velX, velY = a:getBody():getLinearVelocity()
                 local sumVel = math.abs(velX) + math.abs(velY)
                 
                 if sumVel > 20 then
                     table.insert(self.destroyedBodies, b:getBody())
                 end
+
+                a:getUserData().hasCollided = true
             else
                 local velX, velY = b:getBody():getLinearVelocity()
                 local sumVel = math.abs(velX) + math.abs(velY)
@@ -84,11 +88,18 @@ function Level:init()
                 if sumVel > 20 then
                     table.insert(self.destroyedBodies, a:getBody())
                 end
+
+                b:getUserData().hasCollided = true
             end
         end
 
         -- if we hit the ground, play a bounce sound
         if types['Player'] and types['Ground'] then
+            if a:getUserData().type == 'Player' then
+                a:getUserData().hasCollided = true
+            else
+                b:getUserData().hasCollided = true
+            end
             gSounds['bounce']:stop()
             gSounds['bounce']:play()
         end
@@ -124,7 +135,7 @@ function Level:init()
     self.edgeShape = love.physics.newEdgeShape(0, 0, VIRTUAL_WIDTH * 3, 0)
 
     -- spawn an alien to try and destroy
-    table.insert(self.aliens, Alien(self.world, 'square', VIRTUAL_WIDTH - 80, VIRTUAL_HEIGHT - TILE_SIZE - ALIEN_SIZE / 2, 'Alien'))
+    table.insert(self.aliens, Alien(self.world, 'square', VIRTUAL_WIDTH - 80, VIRTUAL_HEIGHT - TILE_SIZE - ALIEN_SIZE / 2, {type = 'Alien', hasCollided = false}))
 
     -- spawn a few obstacles
     table.insert(self.obstacles, Obstacle(self.world, 'vertical',
@@ -138,7 +149,7 @@ function Level:init()
     self.groundBody = love.physics.newBody(self.world, -VIRTUAL_WIDTH, VIRTUAL_HEIGHT - 35, 'static')
     self.groundFixture = love.physics.newFixture(self.groundBody, self.edgeShape)
     self.groundFixture:setFriction(0.5)
-    self.groundFixture:setUserData('Ground')
+    self.groundFixture:setUserData({type = 'Ground'})
 
     -- background graphics
     self.background = Background()
@@ -184,12 +195,22 @@ function Level:update(dt)
 
     -- replace launch marker if original alien stopped moving
     if self.launchMarker.launched then
-        local xPos, yPos = self.launchMarker.alien.body:getPosition()
-        local xVel, yVel = self.launchMarker.alien.body:getLinearVelocity()
-        
-        -- if we fired our alien to the left or it's almost done rolling, respawn
-        if xPos < 0 or (math.abs(xVel) + math.abs(yVel) < 1.5) then
-            self.launchMarker.alien.body:destroy()
+        local aliensStillMoving = 0
+        for k, alien in pairs(self.launchMarker.aliens) do
+            local xPos, yPos = alien.body:getPosition()
+            local xVel, yVel = alien.body:getLinearVelocity()
+
+            -- if we fired our alien to the left or it's almost done rolling, respawn
+            if not (xPos < 0 or (math.abs(xVel) + math.abs(yVel) < 5)) then
+                aliensStillMoving = aliensStillMoving + 1
+            end
+        end
+
+        if aliensStillMoving == 0 then
+            for k, alien in pairs(self.launchMarker.aliens) do
+                alien.body:destroy()
+            end
+
             self.launchMarker = AlienLaunchMarker(self.world)
 
             -- re-initialize level if we have no more aliens
