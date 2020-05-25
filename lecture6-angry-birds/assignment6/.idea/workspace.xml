@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="61f5a6da-309d-43c8-b626-390c434d004a" name="Default Changelist" comment="Assignment6: Alien splits into three aliens when spacebar is pressed">
+      <change beforePath="$PROJECT_DIR$/../../lecture4-mario/assignment4/lib/push.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture4-mario/assignment4/lib/push.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture4-mario/assignment4/src/Dependencies.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture4-mario/assignment4/src/Dependencies.lua" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="1c6V7MBku74BmXbZqlRF7fHtOlV" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../lecture4-mario/assignment4" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="61f5a6da-309d-43c8-b626-390c434d004a" name="Default Changelist" comment="" />
+      <created>1589848861871</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1589848861871</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Assignment6: Love2D 11.03 upgrade, minor bug fixes">
+      <created>1590348701237</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1590348701237</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Assignment6: Crazy small collision?">
+      <created>1590352795826</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1590352795826</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Assignment6: Crazy small collision?">
+      <created>1590352817222</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1590352817222</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Assignment6: Alien splits into three aliens when spacebar is pressed">
+      <created>1590357801774</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1590357801774</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Assignment6: Love2D 11.03 upgrade, minor bug fixes" />
+    <MESSAGE value="Assignment6: Crazy small collision?" />
+    <MESSAGE value="Assignment6: Alien splits into three aliens when spacebar is pressed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Assignment6: Alien splits into three aliens when spacebar is pressed" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="824" y="300" width="902" height="864" key="CommitChangelistDialog2" timestamp="1590352817230">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="824" y="300" width="902" height="864" key="CommitChangelistDialog2/0.27.2560.1413/2560.504.1920.1080@0.27.2560.1413" timestamp="1590352817230" />
+    <state x="868" y="464" width="424" height="484" key="FileChooserDialogImpl" timestamp="1590358851993">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="868" y="464" width="424" height="484" key="FileChooserDialogImpl/0.27.2560.1413/2560.504.1920.1080@0.27.2560.1413" timestamp="1590358851993" />
+    <state x="1123" y="648" width="303" height="169" key="VCS.ChangelistChooser" timestamp="1590353003387">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="1123" y="648" width="303" height="169" key="VCS.ChangelistChooser/0.27.2560.1413/2560.504.1920.1080@0.27.2560.1413" timestamp="1590353003387" />
+    <state x="971" y="471" width="1042" height="522" key="find.popup" timestamp="1590355229605">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="971" y="471" width="1042" height="522" key="find.popup/0.27.2560.1413/2560.504.1920.1080@0.27.2560.1413" timestamp="1590355229605" />
+    <state x="944" y="343" key="run.anything.popup" timestamp="1590352064788">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="944" y="343" key="run.anything.popup/0.27.2560.1413/2560.504.1920.1080@0.27.2560.1413" timestamp="1590352064788" />
+    <state x="605" y="481" key="vcs.ApplyPatchDifferentiatedDialog" timestamp="1590352875263">
+      <screen x="0" y="27" width="2560" height="1413" />
+    </state>
+    <state x="605" y="481" key="vcs.ApplyPatchDifferentiatedDialog/0.27.2560.1413/2560.504.1920.1080@0.27.2560.1413" timestamp="1590352875263" />
+  </component>
+</project>
