@@ -26,8 +26,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61f5a6da-309d-43c8-b626-390c434d004a" name="Default Changelist" comment="Assignment6: Alien splits into three aliens when spacebar is pressed">
-      <change beforePath="$PROJECT_DIR$/../../lecture4-mario/assignment4/lib/push.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture4-mario/assignment4/lib/push.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../lecture4-mario/assignment4/src/Dependencies.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture4-mario/assignment4/src/Dependencies.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Assignment6__Crazy_small_collision_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Assignment6__Crazy_small_collision_/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/lib/push.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/lib/push.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/Dependencies.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/Dependencies.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/battle/BattleSprite.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/battle/BattleSprite.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/gui/Panel.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/gui/Panel.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/gui/ProgressBar.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/gui/ProgressBar.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/states/game/BattleState.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/states/game/BattleState.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/states/game/FadeInState.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/states/game/FadeInState.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/states/game/FadeOutState.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/states/game/FadeOutState.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/states/game/StartState.lua" beforeDir="false" afterPath="$PROJECT_DIR$/../../lecture7-pokemon/assignment7/src/states/game/StartState.lua" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
