@@ -126,6 +126,7 @@ function LevelMaker.generate(width, height)
                 )
                 keySpawned = true
 
+            -- spawn lock in second half of level
             elseif ( (x > width/2) and (lockSpawned == false) and math.random((width/2 - 5) - (x - width/2)) == 1)
                 or (x > width - 5 and lockSpawned == false) then
                 table.insert(objects,
@@ -138,6 +139,7 @@ function LevelMaker.generate(width, height)
 
                         frame = LOCKS[keyLockType],
                         collidable = true,
+                        destroyable = true,
                         hit = false,
                         solid = true,
 
@@ -147,6 +149,9 @@ function LevelMaker.generate(width, height)
                                 drawFlag(player, objects, width - 1)
                                 player.hasKey = false
                                 obj.hit = true
+                                if obj.destroyable then
+                                    obj.destroy = true
+                                end
                             end
 
                             gSounds['empty-block']:play()
