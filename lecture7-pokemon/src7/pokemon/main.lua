@@ -9,7 +9,7 @@
     a Japanese monster-catching phenomenon that took the world by storm in the late 90s. Even
     to this day, Pokemon is hugely successful, with games, movies, and various other forms of
     merchandise selling like crazy. The game formula itself is an addicting take on the JRPG,
-    where the player can not only fight random creatures in the wild but also recruit them to
+    where the player can not only fight  random creatures in the wild but also recruit them to
     be in his or her party at all times, where they can level up, learn new abilities, and even
     evolve.
 
