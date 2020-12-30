@@ -23,7 +23,7 @@ public class GemSpawner : MonoBehaviour
         while(true){
             Instantiate(prefabs[Random.Range(0, prefabs.Length)], new Vector3(26, Random.Range(-10, 10), 10), Quaternion.identity);
         
-            // pause 1-5 seconds until the next coin spawns
+            // pause 3-8 seconds until the next gem spawns
             yield return new WaitForSeconds(Random.Range(3, 8));
         }
 
