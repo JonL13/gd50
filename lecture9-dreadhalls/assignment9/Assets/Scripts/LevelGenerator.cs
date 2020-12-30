@@ -19,6 +19,8 @@ public class LevelGenerator : MonoBehaviour {
 	// number of times we want to "dig" in our maze
 	public int tilesToRemove = 50;
 
+	public float floorHoleChancePercent = 0.05f;
+
 	public int mazeSize;
 
 	// spawns at the end of the maze generation
@@ -42,12 +44,12 @@ public class LevelGenerator : MonoBehaviour {
 		// create actual maze blocks from maze boolean data
 		for (int z = 0; z < mazeSize; z++) {
 			for (int x = 0; x < mazeSize; x++) {
+				bool isFloorHole = false;
 				if (mapData[z, x]) {
 					CreateChildPrefab(wallPrefab, wallsParent, x, 1, z);
 					CreateChildPrefab(wallPrefab, wallsParent, x, 2, z);
 					CreateChildPrefab(wallPrefab, wallsParent, x, 3, z);
 				} else if (!characterPlaced) {
-					
 					// place the character controller on the first empty wall we generate
 					characterController.transform.SetPositionAndRotation(
 						new Vector3(x, 1, z), Quaternion.identity
@@ -55,10 +57,18 @@ public class LevelGenerator : MonoBehaviour {
 
 					// flag as placed so we never consider placing again
 					characterPlaced = true;
+				} else{
+					// if we are not creating a wall here and this is not where the player spawns, we have a chance to create a hole in the floor
+					if(Random.value <= floorHoleChancePercent){
+						isFloorHole = true;
+					}
+
 				}
 
 				// create floor and ceiling
-				CreateChildPrefab(floorPrefab, floorParent, x, 0, z);
+				if(!isFloorHole){
+					CreateChildPrefab(floorPrefab, floorParent, x, 0, z);
+				}
 
 				if (generateRoof) {
 					CreateChildPrefab(ceilingPrefab, wallsParent, x, 4, z);
