@@ -23,6 +23,7 @@ function Selection:init(def)
     self.font = def.font or gFonts['small']
 
     self.gapHeight = self.height / #self.items
+    self.drawCursor = def.drawCursor
 
     self.currentSelection = 1
 end
@@ -61,7 +62,7 @@ function Selection:render()
         local paddedY = currentY + (self.gapHeight / 2) - self.font:getHeight() / 2
 
         -- draw selection marker if we're at the right index
-        if i == self.currentSelection then
+        if i == self.currentSelection and self.drawCursor == true then
             love.graphics.draw(gTextures['cursor'], self.x - 8, paddedY)
         end
 
